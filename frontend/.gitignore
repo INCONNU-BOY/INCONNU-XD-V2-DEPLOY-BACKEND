@@ -1,0 +1,32 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Expo
+.expo/
+.expo-shared/
+.expo/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Builds
+android/
+ios/
+web-build/
+
+# Environment variables
+.env
+.env.local
+
+# Misc
+*.log
+*.pem
+*.p12
+*.key
+*.mobileprovision
+*.orig
+
+# Testing
+coverage/
