@@ -4,21 +4,24 @@
     "slug": "inconnu-hosting",
     "version": "1.0.0",
     "orientation": "portrait",
+
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "dark",
+
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#0f172a"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+
+    "assetBundlePatterns": ["**/*"],
+
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.inconnu.hosting",
       "buildNumber": "1.0.0"
     },
+
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -26,23 +29,14 @@
       },
       "package": "com.inconnu.hosting",
       "versionCode": 1,
-      "permissions": [
-        "INTERNET",
-        "ACCESS_NETWORK_STATE"
-      ]
+      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
     },
+
     "web": {
       "favicon": "./assets/images/favicon.png",
       "bundler": "metro"
     },
-    "extra": {
-      "eas": {
-        "projectId": "your-project-id"
-      }
-    },
-    "plugins": [
-      "expo-font"
-    ],
+
     "scheme": "inconnuhosting",
     "updates": {
       "fallbackToCacheTimeout": 0
