@@ -1,3 +1,5 @@
+frontend/src/screens/main/ServerScreen.js
+
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -7,7 +9,7 @@ import {
   RefreshControl,
   TouchableOpacity,
   Alert,
-  Modal,
+  Modal as RNModal,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
@@ -18,7 +20,7 @@ import Layout from '../../components/layout/Layout';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
-import Modal from '../../components/common/Modal';
+import CustomModal from '../../components/common/Modal';
 import Terminal from '../../components/custom/Terminal';
 import StatusBadge from '../../components/custom/StatusBadge';
 
@@ -33,10 +35,10 @@ const ServerScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { serverId } = route.params;
-  
+
   const { servers, loading, refreshServers, startServer, stopServer, restartServer, deleteServer } = useServers();
   const { user } = useAuth();
-  
+
   const [refreshing, setRefreshing] = useState(false);
   const [server, setServer] = useState(null);
   const [logs, setLogs] = useState([]);
@@ -61,9 +63,9 @@ const ServerScreen = () => {
         loadServerDetails();
       }, 5000); // Poll every 5 seconds
     }
-    
-    return () => {
-      if (interval) clearInterval(interval);
+
+    return () => { 
+      if (interval) clearInterval(interval); 
     };
   }, [server?.status]);
 
@@ -81,16 +83,15 @@ const ServerScreen = () => {
         getServerStatus(serverId),
         getServerLogs(serverId, 100),
       ]);
-      
-      if (statusData.success) {
-        setDetailedStatus(statusData);
-      }
-      
-      if (logsData.success) {
-        setLogs(logsData.logs);
-      }
-    } catch (error) {
-      console.error('Failed to load server details:', error);
+
+      if (statusData.success) { 
+        setDetailedStatus(statusData); 
+      } 
+      if (logsData.success) { 
+        setLogs(logsData.logs); 
+      } 
+    } catch (error) { 
+      console.error('Failed to load server details:', error); 
     }
   };
 
@@ -185,28 +186,26 @@ const ServerScreen = () => {
 
   const handleSendCommand = async () => {
     if (!command.trim()) return;
-    
-    // Add command to logs
-    const newLog = {
-      timestamp: new Date(),
-      level: 'info',
+
+    // Add command to logs 
+    const newLog = { 
+      timestamp: new Date(), 
+      level: 'info', 
       message: `$ ${command}`,
-    };
-    
-    setLogs(prev => [...prev, newLog]);
-    setCommand('');
-    
+    }; 
+    setLogs(prev => [...prev, newLog]); 
+    setCommand(''); 
     // TODO: Send command to server via API
   };
 
   const formatUptime = (ms) => {
     if (!ms) return '0s';
-    
-    const seconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
 
+    const seconds = Math.floor(ms / 1000); 
+    const minutes = Math.floor(seconds / 60); 
+    const hours = Math.floor(minutes / 60); 
+    const days = Math.floor(hours / 24); 
+    
     if (days > 0) return `${days}d ${hours % 24}h`;
     if (hours > 0) return `${hours}h ${minutes % 60}m`;
     if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
@@ -222,7 +221,7 @@ const ServerScreen = () => {
     return (
       <Layout headerProps={{ title: 'Server Not Found' }}>
         <View style={styles.notFoundContainer}>
-          <Icon name="server-off" size={64} color="#ccc" />
+          <Icon name="server-off" size={64} color="#666" />
           <Text style={styles.notFoundText}>Server not found</Text>
           <Button
             title="Go Back"
@@ -240,22 +239,25 @@ const ServerScreen = () => {
       <ScrollView
         style={styles.container}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#667eea']}
+          />
         }
         showsVerticalScrollIndicator={false}
       >
         {/* Server Header */}
-        <Card style={styles.headerCard} gradient>
+        <Card style={styles.headerCard}>
           <View style={styles.headerContent}>
             <View style={styles.headerInfo}>
               <View style={styles.titleSection}>
-                <Icon name="server" size={32} color="#FFF" />
+                <Icon name="server" size={32} color="#667eea" />
                 <View style={styles.titleContainer}>
                   <Text style={styles.serverName}>{server.name}</Text>
                   <Text style={styles.serverPort}>Port: {server.port}</Text>
                 </View>
               </View>
-              <StatusBadge status={server.status} size="large" />
             </View>
             
             <View style={styles.statsRow}>
@@ -289,7 +291,6 @@ const ServerScreen = () => {
                 style={styles.actionButton}
               />
             )}
-            
             {server.status === 'running' && (
               <>
                 <Button
@@ -308,7 +309,6 @@ const ServerScreen = () => {
                 />
               </>
             )}
-            
             <Button
               title="Edit"
               onPress={() => setShowEditModal(true)}
@@ -316,7 +316,6 @@ const ServerScreen = () => {
               icon="pencil"
               style={styles.actionButton}
             />
-            
             <Button
               title="Delete"
               onPress={() => setShowDeleteModal(true)}
@@ -330,7 +329,6 @@ const ServerScreen = () => {
         {/* Server Details */}
         <Card style={styles.detailsCard}>
           <Text style={styles.sectionTitle}>Server Details</Text>
-          
           <View style={styles.detailsGrid}>
             <View style={styles.detailItem}>
               <Icon name="identifier" size={20} color="#667eea" />
@@ -387,8 +385,8 @@ const ServerScreen = () => {
             </View>
           </View>
           
-          <TouchableOpacity
-            style={styles.envButton}
+          <TouchableOpacity 
+            style={styles.envButton} 
             onPress={() => setShowEnvModal(true)}
           >
             <Icon name="code-braces" size={20} color="#667eea" />
@@ -405,9 +403,8 @@ const ServerScreen = () => {
               <Icon name="refresh" size={20} color="#667eea" />
             </TouchableOpacity>
           </View>
-          
-          <Terminal
-            logs={logs}
+          <Terminal 
+            logs={logs} 
             onSendCommand={handleSendCommand}
             style={styles.terminal}
             title={`${server.name} - Logs`}
@@ -418,7 +415,6 @@ const ServerScreen = () => {
         {detailedStatus && (
           <Card style={styles.statusCard}>
             <Text style={styles.sectionTitle}>Detailed Status</Text>
-            
             <View style={styles.statusGrid}>
               <View style={styles.statusItem}>
                 <Text style={styles.statusLabel}>Process ID</Text>
@@ -429,12 +425,10 @@ const ServerScreen = () => {
               
               <View style={styles.statusItem}>
                 <Text style={styles.statusLabel}>Is Running</Text>
-                <Text
+                <Text 
                   style={[
                     styles.statusValue,
-                    detailedStatus.isRunning
-                      ? styles.runningText
-                      : styles.stoppedText,
+                    detailedStatus.isRunning ? styles.runningText : styles.stoppedText,
                   ]}
                 >
                   {detailedStatus.isRunning ? 'Yes' : 'No'}
@@ -453,7 +447,7 @@ const ServerScreen = () => {
       </ScrollView>
 
       {/* Edit Server Modal */}
-      <Modal
+      <CustomModal
         visible={showEditModal}
         onClose={() => setShowEditModal(false)}
         title="Edit Server"
@@ -463,12 +457,9 @@ const ServerScreen = () => {
             <Input
               label="Server Name"
               value={editingServer.name}
-              onChangeText={(text) =>
-                setEditingServer({ ...editingServer, name: text })
-              }
+              onChangeText={(text) => setEditingServer({ ...editingServer, name: text })}
               placeholder="Enter server name"
             />
-            
             <Button
               title="Save Changes"
               onPress={handleUpdate}
@@ -476,7 +467,6 @@ const ServerScreen = () => {
               size="large"
               style={styles.modalButton}
             />
-            
             <Button
               title="Cancel"
               onPress={() => setShowEditModal(false)}
@@ -485,26 +475,22 @@ const ServerScreen = () => {
             />
           </View>
         )}
-      </Modal>
+      </CustomModal>
 
       {/* Delete Confirmation Modal */}
-      <Modal
+      <CustomModal
         visible={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         title="Delete Server"
       >
         <View style={styles.modalContent}>
           <Icon name="alert-circle" size={48} color="#ef4444" />
-          
           <Text style={styles.deleteText}>
             Are you sure you want to delete this server?
           </Text>
-          
           <Text style={styles.deleteWarning}>
-            This action cannot be undone. All server data and logs will be
-            permanently deleted.
+            This action cannot be undone. All server data and logs will be permanently deleted.
           </Text>
-          
           <View style={styles.deleteActions}>
             <Button
               title="Delete Server"
@@ -513,7 +499,6 @@ const ServerScreen = () => {
               size="large"
               style={styles.deleteButton}
             />
-            
             <Button
               title="Cancel"
               onPress={() => setShowDeleteModal(false)}
@@ -522,10 +507,10 @@ const ServerScreen = () => {
             />
           </View>
         </View>
-      </Modal>
+      </CustomModal>
 
       {/* Environment Variables Modal */}
-      <Modal
+      <CustomModal
         visible={showEnvModal}
         onClose={() => setShowEnvModal(false)}
         title="Environment Variables"
@@ -555,7 +540,7 @@ const ServerScreen = () => {
             </View>
           ))}
         </ScrollView>
-      </Modal>
+      </CustomModal>
     </Layout>
   );
 };
