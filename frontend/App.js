@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { Platform, View, Text } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import FlashMessage from 'react-native-flash-message';
 import * as SplashScreen from 'expo-splash-screen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Context Providers
 import { AuthProvider } from './src/context/AuthContext';
@@ -15,11 +15,10 @@ import { ThemeProvider } from './src/context/ThemeContext';
 // Navigation
 import AppNavigator from './src/navigation/AppNavigator';
 
-// Services
-import { initSocket } from './src/services/socket';
-
-// Prevent splash screen from auto-hiding
-SplashScreen.preventAutoHideAsync();
+// Splash screen ONLY mobile
+if (Platform.OS !== 'web') {
+  SplashScreen.preventAutoHideAsync();
+}
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -27,23 +26,25 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
-        // Pre-load fonts, make API calls, etc.
-        await Promise.all([
-          // Load any async resources here
-        ]);
+        // preload if needed
       } catch (e) {
         console.warn('App preparation error:', e);
       } finally {
         setAppIsReady(true);
-        await SplashScreen.hideAsync();
+        if (Platform.OS !== 'web') {
+          await SplashScreen.hideAsync();
+        }
       }
     }
-
     prepare();
   }, []);
 
   if (!appIsReady) {
-    return null;
+    return (
+      <View style={{ flex: 1, backgroundColor: '#0f172a', alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: 'white' }}>Loading...</Text>
+      </View>
+    );
   }
 
   return (
@@ -53,7 +54,7 @@ export default function App() {
           <AuthProvider>
             <ServerProvider>
               <NavigationContainer>
-                <StatusBar style="light" backgroundColor="#0f172a" />
+                <StatusBar style="light" />
                 <AppNavigator />
                 <FlashMessage position="top" />
               </NavigationContainer>
@@ -63,4 +64,4 @@ export default function App() {
       </GestureHandlerRootView>
     </SafeAreaProvider>
   );
-}
+    }
