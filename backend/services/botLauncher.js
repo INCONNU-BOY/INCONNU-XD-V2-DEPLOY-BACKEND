@@ -114,7 +114,7 @@ class BotLauncher {
       } catch {
         // Create default package.json
         const packageJson = {
-          name: `inconnu-bot-${this.serverId}`,
+          name: `inconnu-xd-${this.serverId}`,
           version: "1.0.0",
           main: "index.js",
           type: "module",
