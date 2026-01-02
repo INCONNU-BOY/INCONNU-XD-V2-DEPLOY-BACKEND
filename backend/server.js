@@ -10,7 +10,7 @@ const winston = require('winston');
 const socketio = require('socket.io');
 const http = require('http');
 
-// Load environment variables
+// environment variables
 dotenv.config();
 
 // Import routes
